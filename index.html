@@ -1,0 +1,205 @@
+<html>
+    <head>
+        <meta charset=""utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <link rel="icon" href="/img/favicon.ico">
+
+        <title>PremiumAPITest</title>
+        <h1>Premium Reporting API  Web Application</h1>
+    </head>
+    <body onload="premiumApi.onLoad()">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js"></script>
+
+        <script>
+            var premiumApi = {
+                "access_token": "",
+                "LogIn": ["Log In", "Logged In"],
+                "onLoad": function () {
+                    console.log("onLoad")
+
+                    var url = new URL(window.location.href.replace('#', '?'))
+
+                    var query_string = url.search
+
+                    var search_params = new URLSearchParams(query_string)
+
+                    premiumApi.access_token = search_params.get('access_token')
+
+                    let logInButton = document.getElementById("LogIn")
+                    logInButton.innerText = (premiumApi.access_token) ? premiumApi.LogIn[1] : premiumApi.LogIn[0]
+
+                    console.log(premiumApi.access_token)
+                },
+
+
+
+                "getusageinformation": function () {
+                    console.log("getusageinformation")
+
+                    if (premiumApi.access_token === "") 
+                        return
+
+                    fetch('https://developer.api.autodesk.com/insights/v1/usage-queries?offset=0&limit=100&context=4314051', { 
+                        headers: {
+                            'Authorization': `Bearer ${premiumApi.access_token}`,
+                            'Content-Type' : 'application/json'
+         
+                        }
+                    })
+                    .then(res => res.text())
+                    .then(data => {
+                        let json = JSON.parse(data)
+                        let pretty = JSON.stringify(json, null, 2)
+                        premiumApi.showInfo(pretty)
+                        console.log(data)
+                    })
+                },
+
+
+                "getspecificusagequery": function () {
+                    console.log("getspecificusagequery")
+
+                    if (premiumApi.access_token === "") 
+                        return
+
+                    fetch('https://developer.api.autodesk.com/insights/v1/usage-queries/8e68737552e87c3bb04885fe761f89b3d1da5dc982261885583a3c1a0484ba49', { 
+                        headers: {
+                            'Authorization': `Bearer ${premiumApi.access_token}`
+                        }
+                    })
+                    .then(res => res.text())
+                    .then(data => {
+                        let json = JSON.parse(data)
+                        let pretty = JSON.stringify(json, null, 2)
+                        premiumApi.showInfo(pretty)
+                        console.log(data)
+                    })
+                },
+
+
+                "exportqueryinformation": function () {
+                    console.log("exportqueryinformation")
+
+                    if (premiumApi.access_token === "") 
+                        return
+
+                    fetch('https://developer.api.autodesk.com/insights/v1/exports', { 
+                        headers: {
+                            'Authorization': `Bearer ${premiumApi.access_token}`
+                        }
+                    })
+                    .then(res => res.text())
+                    .then(data => {
+                        let json = JSON.parse(data)
+                        let pretty = JSON.stringify(json, null, 2)
+                        premiumApi.showInfo(pretty)
+                        console.log(data)
+                    })
+                },
+
+
+                
+                "getspecificreport": function () {
+                    console.log("getspecificreport")
+
+                    if (premiumApi.access_token === "") 
+                        return
+
+                    fetch('https://developer.api.autodesk.com/insights/v1/exports/0f30e741-ea4f-44fd-8675-840f41188257', { 
+                        headers: {
+                            'Authorization': `Bearer ${premiumApi.access_token}`
+                        }
+                    })
+                    .then(res => res.text())
+                    .then(data => {
+                        let json = JSON.parse(data)
+                        let pretty = JSON.stringify(json, null, 2)
+                        premiumApi.showInfo(pretty)
+                        console.log(data)
+                    })
+                },
+
+
+                "viewallexport": function () {
+                    console.log("viewallexport")
+
+                    if (premiumApi.access_token === "") 
+                        return
+
+                    fetch('https://developer.api.autodesk.com/insights/v1/exports', { 
+                        headers: {
+                            'Authorization': `Bearer ${premiumApi.access_token}`
+                        }
+                    })
+                    .then(res => res.text())
+                    .then(data => {
+                        let json = JSON.parse(data)
+                        let pretty = JSON.stringify(json, null, 2)
+                        premiumApi.showInfo(pretty)
+                        console.log(data)
+                    })
+                },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                "logIn": function () {
+                    console.log("logIn")
+
+                    let clientId = "CLIENT_ID" 
+                    let scopes = "data:read+bucket:read"
+                    let redirectUri = encodeURI("http://localhost:5500")
+                    window.open(`https://developer.api.autodesk.com/authentication/v1/authorize` +
+                        `?response_type=token&client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scopes}`, "_self")
+                },
+
+
+
+
+
+                "showInfo": function (text) {
+                    let logInButton = document.getElementById("Info")
+                    logInButton.value = text
+                }
+            }
+
+            
+          
+        </script>
+
+        
+       
+
+        <button id="LogIn" onclick="premiumApi.logIn()" style="background-color:  orange; border: none; border-radius: 5px; color: #333; /* Dark grey */ padding: 15px 32px">Log In</button>
+        <br><br>
+        <button id="ExportQueryInformation" onclick="premiumApi.exportqueryinformation()" style="background-color: orange; border: none; border-radius: 5px; color: #333; /* Dark grey */ padding: 15px 32px">Get Export Query Information</button>
+        <br><br>
+        <button id="getSpecificReport" onclick="premiumApi.getspecificreport()" style="background-color: orange; border: none; border-radius: 5px; color: #333; /* Dark grey */ padding: 15px 32px">Get Specific Report</button>
+        <br><br>
+        <button id="viewAllExport" onclick="premiumApi.viewallexport()" style="background-color: orange; border: none; border-radius: 5px; color: #333; /* Dark grey */ padding: 15px 32px">View All Export</button>
+        <br><br> 
+        <button id="GetSpecificUsageQuery" onclick="premiumApi.getspecificusagequery()" style="background-color: orange; border: none; border-radius: 5px; color: #333; /* Dark grey */ padding: 15px 32px">Get Specific Usage Query</button>
+        <br><br>
+        <button id="GetUsageInformation" onclick="premiumApi.getusageinformation()" style="background-color: orange; border: none; border-radius: 5px; color: #333; /* Dark grey */ padding: 15px 32px">Get Usage Info</button>  
+        <br><br>
+
+        <textarea id="Info" rows="100" cols="50"></textarea> <canvas id="canvas"></canvas>     
+    </body>
+</html>
