@@ -3,15 +3,141 @@
         <meta charset=""utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <link rel="icon" href="/img/favicon.ico">
 
         <title>PremiumAPITest</title>
         <h1>Premium Reporting API  Web Application</h1>
+
+
+        <title>Convert JSON Data to HTML Table</title>
+        <style>
+            th, td, p, input {
+                font:14px Verdana;
+            }
+            table, th, td 
+            {
+                border: solid 1px #DDD;
+                border-collapse: collapse;
+                padding: 2px 3px;
+                text-align: center;
+            }
+            th {
+                font-weight:bold;
+            }
+            .column {
+  float: left;
+  width: 50%;
+}
+
+/* Clear floats after the columns */
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+        </style>
+
+        <div class="container">
+            <table class="table table-stripped">
+                <thead>
+                <tr>
+     
+            <th>ID</th>
+            <th>timestamp</th>
+            <th>downloads</th>
+     
+     
+                </tr>
+     
+     
+     
+                </thead>
+               
+             <tbody id="data">
+     
+     
+             </tbody>
+            </table>
+         </div>
+         <div id="myData"></div>
     </head>
     <body onload="premiumApi.onLoad()">
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js"></script>
-
+        <input type="button" onclick="CreateTableFromJSON()" value="Create Table From JSON" />
+    <p id="showData"></p>
         <script>
+
+function CreateTableFromJSON() {
+        var myBooks = [
+        {
+  
+      
+      "id": "5a1dd368-2869-4d71-8345-f4fc2ca0ca25",
+      "timestamp": "2022-02-17T23:43:27Z",
+   
+          
+      
+      "status": "COMPLETED",
+      "outputFormat": "EXCEL",
+      "teamId": "10933601",
+      "teamName": "Partner Premium - 3601",
+      
+      "contextId": "10933601"
+    }
+       ]
+
+        // EXTRACT VALUE FOR HTML HEADER. 
+        // ('Book ID', 'Book Name', 'Category' and 'Price')
+        var col = [];
+        for (var i = 0; i < myBooks.length; i++) {
+            for (var key in myBooks[i]) {
+                if (col.indexOf(key) === -1) {
+                    col.push(key);
+                }
+            }
+        }
+
+        // CREATE DYNAMIC TABLE.
+        var table = document.createElement("table");
+
+        // CREATE HTML TABLE HEADER ROW USING THE EXTRACTED HEADERS ABOVE.
+
+        var tr = table.insertRow(-1);                   // TABLE ROW.
+
+        for (var i = 0; i < col.length; i++) {
+            var th = document.createElement("th");      // TABLE HEADER.
+            th.innerHTML = col[i];
+            tr.appendChild(th);
+        }
+
+        // ADD JSON DATA TO THE TABLE AS ROWS.
+        for (var i = 0; i < myBooks.length; i++) {
+
+            tr = table.insertRow(-1);
+
+            for (var j = 0; j < col.length; j++) {
+                var tabCell = tr.insertCell(-1);
+                tabCell.innerHTML = myBooks[i][col[j]];
+            }
+        }
+
+        // FINALLY ADD THE NEWLY CREATED TABLE WITH JSON DATA TO A CONTAINER.
+        var divContainer = document.getElementById("showData");
+        divContainer.innerHTML = "";
+        divContainer.appendChild(table);
+    }
+
+
+
+
+
+
+//url calls
+
+
+
+
             var premiumApi = {
                 "access_token": "",
                 "LogIn": ["Log In", "Logged In"],
@@ -42,9 +168,8 @@
 
                     fetch('https://developer.api.autodesk.com/insights/v1/usage-queries?offset=0&limit=100&context=4314051', { 
                         headers: {
-                            'Authorization': `Bearer ${premiumApi.access_token}`,
-                            'Content-Type' : 'application/json'
-         
+                            'Authorization': `Bearer ${premiumApi.access_token}`
+                        
                         }
                     })
                     .then(res => res.text())
@@ -63,7 +188,7 @@
                     if (premiumApi.access_token === "") 
                         return
 
-                    fetch('https://developer.api.autodesk.com/insights/v1/usage-queries/8e68737552e87c3bb04885fe761f89b3d1da5dc982261885583a3c1a0484ba49', { 
+                    fetch('https://developer.api.autodesk.com/insights/v1/usage-queries/f6113e7524c6d2c49e1f581585326f9e36def45655564954e272150ac3614933', { 
                         headers: {
                             'Authorization': `Bearer ${premiumApi.access_token}`
                         }
@@ -72,6 +197,7 @@
                     .then(data => {
                         let json = JSON.parse(data)
                         let pretty = JSON.stringify(json, null, 2)
+                        
                         premiumApi.showInfo(pretty)
                         console.log(data)
                     })
@@ -106,7 +232,7 @@
                     if (premiumApi.access_token === "") 
                         return
 
-                    fetch('https://developer.api.autodesk.com/insights/v1/exports/0f30e741-ea4f-44fd-8675-840f41188257', { 
+                    fetch('https://developer.api.autodesk.com/insights/v1/exports/d095407d-f86a-4426-8ec0-46afea5694de', { 
                         headers: {
                             'Authorization': `Bearer ${premiumApi.access_token}`
                         }
@@ -136,11 +262,66 @@
                     .then(data => {
                         let json = JSON.parse(data)
                         let pretty = JSON.stringify(json, null, 2)
+                        var user=json[0]
+
+                       // document.getElementById("demo").innerHTML=json.exports[10].downloads[0].downloadURL
+                    
+
+              
+
+
+
+
+
+
+
+                    
+              
+              
                         premiumApi.showInfo(pretty)
-                        console.log(data)
+
+
+
+
+                      console.log(json)
+               
+    
+                     
+    
+        console.log(json.exports[10].downloads[0].downloadURL)
+        
+    
+
+
+
+
+
+
+
+
+
+
+
+              
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     })
                 },
-
 
 
 
@@ -163,13 +344,13 @@
                 "logIn": function () {
                     console.log("logIn")
 
-                    let clientId = "CLIENT_ID" 
-                    let scopes = "data:read+bucket:read"
+                    let clientId = "HPbr3qGy5pkwUJ32bAARq8b3NfuFATtH" 
+                    let clientSecret="pA9YjNSob7HWLXCo"
+                    let scopes = "data:read+data:write+bucket:read"
                     let redirectUri = encodeURI("http://localhost:5500")
                     window.open(`https://developer.api.autodesk.com/authentication/v1/authorize` +
                         `?response_type=token&client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scopes}`, "_self")
                 },
-
 
 
 
@@ -180,13 +361,14 @@
                 }
             }
 
+        
             
           
         </script>
 
         
-       
-
+       <div class="row">
+<div class="column">
         <button id="LogIn" onclick="premiumApi.logIn()" style="background-color:  orange; border: none; border-radius: 5px; color: #333; /* Dark grey */ padding: 15px 32px">Log In</button>
         <br><br>
         <button id="ExportQueryInformation" onclick="premiumApi.exportqueryinformation()" style="background-color: orange; border: none; border-radius: 5px; color: #333; /* Dark grey */ padding: 15px 32px">Get Export Query Information</button>
@@ -199,7 +381,21 @@
         <br><br>
         <button id="GetUsageInformation" onclick="premiumApi.getusageinformation()" style="background-color: orange; border: none; border-radius: 5px; color: #333; /* Dark grey */ padding: 15px 32px">Get Usage Info</button>  
         <br><br>
+    </div>
+    <div class="column">
+      
 
-        <textarea id="Info" rows="100" cols="50"></textarea> <canvas id="canvas"></canvas>     
+        <a id="demo" download></a>
+       
+        <textarea id="Info" rows="100" cols="50"></textarea> 
+        
+      
+        
+        <canvas id="canvas"></canvas> 
+        <canvas id="myChart" width="400" height="400"></canvas>
+    </div>
+    </div>
+
+        
     </body>
 </html>
