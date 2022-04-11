@@ -264,7 +264,7 @@ function CreateTableFromJSON() {
                         let pretty = JSON.stringify(json, null, 2)
                         var user=json[0]
 
-                       // document.getElementById("demo").innerHTML=json.exports[10].downloads[0].downloadURL
+                        document.getElementById("demo").innerHTML=json.exports[3].downloads[0].downloadURL
                     
 
               
@@ -288,7 +288,7 @@ function CreateTableFromJSON() {
     
                      
     
-        console.log(json.exports[10].downloads[0].downloadURL)
+      //  console.log(json.exports[10].downloads[0].downloadURL)
         
     
 
@@ -385,8 +385,9 @@ function CreateTableFromJSON() {
     <div class="column">
       
 
-        <a id="demo" download></a>
-       
+
+        <a id="demo"></a>
+
         <textarea id="Info" rows="100" cols="50"></textarea> 
         
       
