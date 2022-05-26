@@ -292,7 +292,10 @@ function CreateTableFromJSON() {
     
       //  console.log(json.exports[10].downloads[0].downloadURL)
         
-    
+    var dlAnchorElem = document.getElementById('downloadAnchorElem');
+dlAnchorElem.setAttribute("href",     json.exports[3].downloads[0].downloadURL     );
+dlAnchorElem.setAttribute("download", "scene.xlsx");
+dlAnchorElem.click();
 
 
 
@@ -391,7 +394,7 @@ function CreateTableFromJSON() {
         <a id="demo"></a>
 
         <textarea id="Info" rows="100" cols="50"></textarea> 
-        
+        <a id="downloadAnchorElem" style="display:none"></a>
       
         
         <canvas id="canvas"></canvas> 
