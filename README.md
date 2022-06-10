@@ -2,6 +2,10 @@
 
 This app demonstrates how to add reports in a web application from Premium Reporting APIs.
 
+Clone or download the folder. Open the inside folder in Visual Studio Code. 
+
+![1654835662527](C:\Users\t_srivd\AppData\Roaming\Typora\typora-user-images\1654835662527.png)
+
 Update your client_id and client_secret in the login function of index.html
 
 
