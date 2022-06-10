@@ -4,6 +4,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="/powerbi-client/dist/powerbi.js"></script>
     <link rel="icon" href="/img/favicon.ico">
 
         <title>PremiumAPITest</title>
@@ -232,7 +233,7 @@ function CreateTableFromJSON() {
                     if (premiumApi.access_token === "") 
                         return
 
-                    fetch('https://developer.api.autodesk.com/insights/v1/exports/d095407d-f86a-4426-8ec0-46afea5694de', { 
+                    fetch('https://developer.api.autodesk.com/insights/v1/exports/8695c219bdcd45adaff6d5f346fb28712b9b0872b15162b8ad29e578cbbd2b7b', { 
                         headers: {
                             'Authorization': `Bearer ${premiumApi.access_token}`
                         }
@@ -264,66 +265,28 @@ function CreateTableFromJSON() {
                         let pretty = JSON.stringify(json, null, 2)
                         var user=json[0]
 
-                        document.getElementById("demo").innerHTML=json.exports[3].downloads[0].downloadURL
+                //        document.getElementById("demo").innerHTML=json.exports[3].downloads[0].downloadURL
                     
 
-              
-
-
-
-
-
-
-
-                    
-              
               
                         premiumApi.showInfo(pretty)
 
 
-//download this file in order to save it in share point location which can be used in PowerBI integration
-       console.log(json.exports[3].downloads[0].downloadURL)
-     
+
 
                       console.log(json)
                
     
                      
     
-      //  console.log(json.exports[10].downloads[0].downloadURL)
+       console.log(json.exports[0].downloads[0].downloadURL)
         
-    var dlAnchorElem = document.getElementById('downloadAnchorElem');
-dlAnchorElem.setAttribute("href",     json.exports[3].downloads[0].downloadURL     );
-dlAnchorElem.setAttribute("download", "scene.xlsx");
+    
+       
+var dlAnchorElem = document.getElementById('downloadAnchorElem');
+dlAnchorElem.setAttribute("href",     json.exports[0].downloads[0].downloadURL     );
+dlAnchorElem.setAttribute("download", "scene.csv");
 dlAnchorElem.click();
-
-
-
-
-
-
-
-
-
-
-
-              
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
                     })
                 },
