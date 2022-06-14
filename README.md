@@ -1,10 +1,23 @@
-
+# Description
 
 This app demonstrates how to add reports in a web application from Premium Reporting APIs.
 
-Clone or download the folder. Open the folder inside in Visual Studio Code. 
+### Pre-requisites
+
+- Forge Account: Learn how to create a Forge Account, activate subscription and create an app at [this tutorial](http://learnforge.autodesk.io/#/account/)
+
+  
+
+### Setup
+
+- Create a Forge App with access to the Premium Reporting API, use http://localhost:5500 as redirect URL..
+- Clone or download the folder. Open the folder inside in Visual Studio Code.  It's recommended to install [GitHub desktop](https://desktop.github.com/). 
+- For this new App, you can use http://localhost:5500 as redirect URL.
+  Take note of the Client ID and Client Secret, those are your API keys that must remain hidden
 
 ![](sc1.png)
+
+
 
 Update your client_id and client_secret in the login function of index.html
 
@@ -22,7 +35,4 @@ Update your client_id and client_secret in the login function of index.html
 
 Click Go live to run live server on index.html page
 
-Click on Export all usage button and save the csv format of downloaded all.xlsx file in the client folder
-
-Click Go live to run live server on index2.html page to see the charts.
-
+Click on Export all usage button to download xlsx and upload it view and save it in client code folder to have graphical representation.

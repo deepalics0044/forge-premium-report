@@ -1,133 +1,31 @@
 <html>
     <head>
-        <meta charset=""utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width,initial-scale=1.0">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <script src="/powerbi-client/dist/powerbi.js"></script>
-    <link rel="icon" href="/img/favicon.ico">
-
-        <title>PremiumAPITest</title>
-        <h1>Premium Reporting API  Web Application</h1>
-
-
-        <title>Convert JSON Data to HTML Table</title>
-        <style>
-            th, td, p, input {
-                font:14px Verdana;
-            }
-            table, th, td 
-            {
-                border: solid 1px #DDD;
-                border-collapse: collapse;
-                padding: 2px 3px;
-                text-align: center;
-            }
-            th {
-                font-weight:bold;
-            }
-            .column {
-  float: left;
-  width: 50%;
-}
-
-/* Clear floats after the columns */
-.row:after {
-  content: "";
-  display: table;
-  clear: both;
-}
-        </style>
-
-        <div class="container">
-            <table class="table table-stripped">
-                <thead>
-                <tr>
-     
-            <th>ID</th>
-            <th>timestamp</th>
-            <th>downloads</th>
-     
-     
-                </tr>
-     
-     
-     
-                </thead>
-               
-             <tbody id="data">
-     
-     
-             </tbody>
-            </table>
-         </div>
-         <div id="myData"></div>
+         <meta charset=""utf-8">
+         <meta http-equiv="X-UA-Compatible" content="IE=edge">
+         <meta name="viewport" content="width=device-width,initial-scale=1.0">
+         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+         <script src="/powerbi-client/dist/powerbi.js"></script>
+         <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.5/xlsx.full.min.js"></script>
+         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.5/jszip.js"></script>
+         <script src="jquery-1.10.2.min.js" type="text/javascript"></script>  
+         <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.7.7/xlsx.core.min.js"></script>  
+         <script src="https://cdnjs.cloudflare.com/ajax/libs/xls/0.7.4-a/xls.core.min.js"></script>  
+         <link rel="icon" href="/img/favicon.ico">
+         <title>PremiumAPITest</title>
+         <h1>Premium Reporting API  Web Application</h1>  
     </head>
+
+
+
+
+
     <body onload="premiumApi.onLoad()">
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js"></script>
-        <input type="button" onclick="CreateTableFromJSON()" value="Create Table From JSON" />
-    <p id="showData"></p>
+     
+
         <script>
 
-function CreateTableFromJSON() {
-        var myBooks = [
-        {
-  
-      
-      "id": "5a1dd368-2869-4d71-8345-f4fc2ca0ca25",
-      "timestamp": "2022-02-17T23:43:27Z",
-   
-          
-      
-      "status": "COMPLETED",
-      "outputFormat": "EXCEL",
-      "teamId": "10933601",
-      "teamName": "Partner Premium - 3601",
-      
-      "contextId": "10933601"
-    }
-       ]
-
-        // EXTRACT VALUE FOR HTML HEADER. 
-        // ('Book ID', 'Book Name', 'Category' and 'Price')
-        var col = [];
-        for (var i = 0; i < myBooks.length; i++) {
-            for (var key in myBooks[i]) {
-                if (col.indexOf(key) === -1) {
-                    col.push(key);
-                }
-            }
-        }
-
-        // CREATE DYNAMIC TABLE.
-        var table = document.createElement("table");
-
-        // CREATE HTML TABLE HEADER ROW USING THE EXTRACTED HEADERS ABOVE.
-
-        var tr = table.insertRow(-1);                   // TABLE ROW.
-
-        for (var i = 0; i < col.length; i++) {
-            var th = document.createElement("th");      // TABLE HEADER.
-            th.innerHTML = col[i];
-            tr.appendChild(th);
-        }
-
-        // ADD JSON DATA TO THE TABLE AS ROWS.
-        for (var i = 0; i < myBooks.length; i++) {
-
-            tr = table.insertRow(-1);
-
-            for (var j = 0; j < col.length; j++) {
-                var tabCell = tr.insertCell(-1);
-                tabCell.innerHTML = myBooks[i][col[j]];
-            }
-        }
-
-        // FINALLY ADD THE NEWLY CREATED TABLE WITH JSON DATA TO A CONTAINER.
-        var divContainer = document.getElementById("showData");
-        divContainer.innerHTML = "";
-        divContainer.appendChild(table);
-    }
 
 
 
@@ -162,15 +60,24 @@ function CreateTableFromJSON() {
 
 
                 "getusageinformation": function () {
-                    console.log("getusageinformation")
+                    console.log(premiumApi.access_token)
 
                     if (premiumApi.access_token === "") 
                         return
 
-                    fetch('https://developer.api.autodesk.com/insights/v1/usage-queries?offset=0&limit=100&context=4314051', { 
-                        headers: {
-                            'Authorization': `Bearer ${premiumApi.access_token}`
-                        
+                    fetch('https://developer.api.autodesk.com/insights/v1/usage-queries?offset=0&limit=100&context=10933601', { 
+                        headers: {  
+                                                     
+                            'Authorization': `Bearer ${premiumApi.access_token}` ,
+                            'Content-Type' : 'application/json'
+                        },
+                        method: "POST",
+                        body: {
+      'fields': ['productName','version','fullName'],
+      "metrics": ['earliestUsageDate','latestUsageDate'],
+      'where': '',
+      'orderBy': '',
+      'context': '10933601'
                         }
                     })
                     .then(res => res.text())
@@ -189,9 +96,11 @@ function CreateTableFromJSON() {
                     if (premiumApi.access_token === "") 
                         return
 
-                    fetch('https://developer.api.autodesk.com/insights/v1/usage-queries/f6113e7524c6d2c49e1f581585326f9e36def45655564954e272150ac3614933', { 
+                    fetch('https://developer.api.autodesk.com/insights/v1/usage-queries/addspecificid', { 
                         headers: {
-                            'Authorization': `Bearer ${premiumApi.access_token}`
+                           
+                            'Authorization': `Bearer ${premiumApi.access_token}`,
+                            'Content-Type' : 'application/json'
                         }
                     })
                     .then(res => res.text())
@@ -221,7 +130,38 @@ function CreateTableFromJSON() {
                         let json = JSON.parse(data)
                         let pretty = JSON.stringify(json, null, 2)
                         premiumApi.showInfo(pretty)
-                        console.log(data)
+                        console.log(json)
+                      console.log(json.exports.length)
+                      if(json.exports.length>0){
+                            var temp1="";
+                            json.exports.forEach((u)=>{
+                                temp1 += "<tr>";
+                                temp1 += "<th>"+"Usage Id"+"</th>";
+                                temp1 += "<th>"+"Usage TimeStamp"+"</th>";
+                                temp1 += "<th>"+"Download URL"+"</th></a>";
+                                temp1 += "<th>"+"Status"+"</th>";
+                                temp1 += "<th>"+"Output Format"+"</th></tr>";
+
+                            })
+                            console.log(temp1)
+                            document.getElementById("data9").innerHTML = temp1;
+                        }
+                        if(json.exports.length>0){
+                            var temp="";
+                            json.exports.forEach((u)=>{
+                                temp += "<tr>";
+                                temp += "<td>"+u.id+"</td>";
+                                temp += "<td>"+u.timestamp+"</td>";
+                                temp += "<td>"+u.downloads[0].downloadURL+"</td></a>";
+                                temp += "<td>"+u.status+"</td>";
+                                temp += "<td>"+u.outputFormal+"</td></tr>";
+
+                            })
+                            console.log(temp)
+                            document.getElementById("data10").innerHTML = temp;
+                        }
+
+
                     })
                 },
 
@@ -233,7 +173,7 @@ function CreateTableFromJSON() {
                     if (premiumApi.access_token === "") 
                         return
 
-                    fetch('https://developer.api.autodesk.com/insights/v1/exports/8695c219bdcd45adaff6d5f346fb28712b9b0872b15162b8ad29e578cbbd2b7b', { 
+                    fetch('https://developer.api.autodesk.com/insights/v1/exports/d095407d-f86a-4426-8ec0-46afea5694de', { 
                         headers: {
                             'Authorization': `Bearer ${premiumApi.access_token}`
                         }
@@ -243,7 +183,22 @@ function CreateTableFromJSON() {
                         let json = JSON.parse(data)
                         let pretty = JSON.stringify(json, null, 2)
                         premiumApi.showInfo(pretty)
-                        console.log(data)
+                     
+                        console.log(json.id.length)
+                        if(json.id.length>0){
+                            var temp="";
+                            json.forEach((u)=>{
+                                temp += "<tr>";
+                                temp += "<td>"+u.id+"</td>";
+                                temp += "<td>"+u.timestamp+"</td>";
+                                temp += "<td>"+u.downloads[0].downloadURL+"</td></a>";
+                                temp += "<td>"+u.status+"</td>";
+                                temp += "<td>"+u.outputFormal+"</td></tr>";
+
+                            })
+                            console.log(temp)
+                            document.getElementById("data10").innerHTML = temp;
+                        }
                     })
                 },
 
@@ -265,7 +220,7 @@ function CreateTableFromJSON() {
                         let pretty = JSON.stringify(json, null, 2)
                         var user=json[0]
 
-                //        document.getElementById("demo").innerHTML=json.exports[3].downloads[0].downloadURL
+                        document.getElementById("demo").innerHTML=json.exports[0].downloads[0].downloadURL
                     
 
               
@@ -278,15 +233,53 @@ function CreateTableFromJSON() {
                
     
                      
-    
+    //download this file in order to save it in share point location which can be used in PowerBI integration
        console.log(json.exports[0].downloads[0].downloadURL)
         
     
        
 var dlAnchorElem = document.getElementById('downloadAnchorElem');
-dlAnchorElem.setAttribute("href",     json.exports[0].downloads[0].downloadURL     );
-dlAnchorElem.setAttribute("download", "scene.csv");
+dlAnchorElem.setAttribute("href",json.exports[0].downloads[0].downloadURL);
+dlAnchorElem.setAttribute("download", "scene.xlsx");
 dlAnchorElem.click();
+
+if(json.exports.length>0){
+                            var temp1="";
+                            json.exports.forEach((u)=>{
+                                temp1 += "<tr>";
+                                temp1 += "<th>"+"Usage Id"+"</th>";
+                                temp1 += "<th>"+"Usage TimeStamp"+"</th>";
+                                temp1 += "<th>"+"Download URL"+"</th></a>";
+                                temp1 += "<th>"+"Status"+"</th>";
+                                temp1 += "<th>"+"Output Format"+"</th></tr>";
+
+                            })
+                            console.log(temp1)
+                            document.getElementById("data7").innerHTML = temp1;
+                        }
+                        if(json.exports.length>0){
+                            var temp="";
+                            json.exports.forEach((u)=>{
+                                temp += "<tr>";
+                                temp += "<td>"+u.id+"</td>";
+                                temp += "<td>"+u.timestamp+"</td>";
+                                temp += "<td>"+u.downloads[0].downloadURL+"</td></a>";
+                                temp += "<td>"+u.status+"</td>";
+                                temp += "<td>"+u.outputFormal+"</td></tr>";
+
+                            })
+                            console.log(temp)
+                            document.getElementById("data8").innerHTML = temp;
+                        }
+
+
+
+
+
+
+
+
+
 
                     })
                 },
@@ -317,7 +310,7 @@ dlAnchorElem.click();
                     let scopes = "data:read+data:write+bucket:read"
                     let redirectUri = encodeURI("http://localhost:5500")
                     window.open(`https://developer.api.autodesk.com/authentication/v1/authorize` +
-                        `?response_type=token&client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scopes}`, "_self")
+                        `?response_type=token&client_id=${clientId}&client_secret=${clientSecret}&redirect_uri=${redirectUri}&scope=${scopes}`, "_self")
                 },
 
 
@@ -337,14 +330,264 @@ dlAnchorElem.click();
         
        <div class="row">
 <div class="column">
-        <button id="LogIn" onclick="premiumApi.logIn()" style="background-color:  orange; border: none; border-radius: 5px; color: #333; /* Dark grey */ padding: 15px 32px">Log In</button>
-        <br><br>
+
+    <div class="center">
+        <button id="LogIn" onclick="premiumApi.logIn()" style="background-color:  rgb(185, 166, 130); border: none; border-radius: 5px; color: #333; /* Dark grey */ padding: 15px 32px;center">Log In</button>
+        <br><br></div>
         <button id="ExportQueryInformation" onclick="premiumApi.exportqueryinformation()" style="background-color: orange; border: none; border-radius: 5px; color: #333; /* Dark grey */ padding: 15px 32px">Get Export Query Information</button>
         <br><br>
+        
+              
+        
+        <div class = "container">
+            <table class="table table-stripped">
+                <thead id="data9">
+                
+                </thead>
+         
+              <tbody id="data10">
+
+              </tbody>
+            </table>
+        </div>
+
+<br><br>
         <button id="getSpecificReport" onclick="premiumApi.getspecificreport()" style="background-color: orange; border: none; border-radius: 5px; color: #333; /* Dark grey */ padding: 15px 32px">Get Specific Report</button>
         <br><br>
+        <div class = "container">
+            <table class="table table-stripped">
+                <thead>
+                    <th>Usage id</th>
+                    <th>Usage timestamp</th>
+                    <th>Download URL</th>
+                    <th>Usage status</th>
+                    <th>outputFormat</th>
+                </thead>
+         
+              <tbody id="data11">
+
+              </tbody>
+            </table>
+        </div>
+
+        <br><br>
         <button id="viewAllExport" onclick="premiumApi.viewallexport()" style="background-color: orange; border: none; border-radius: 5px; color: #333; /* Dark grey */ padding: 15px 32px">View All Export</button>
+       
+        <div class = "container">
+            <table class="table table-stripped">
+                <thead id="data7">
+                
+                </thead>
+         
+              <tbody id="data8">
+
+              </tbody>
+            </table>
+        </div>
+       
+       
+       
+       
+       
         <br><br> 
+
+<script>
+
+
+function ExportToTable() {  
+     var regex = /^([a-zA-Z0-9\s_\\.\-:()])+(.xlsx|.xls)$/;  
+     /*Checks whether the file is a valid excel file*/  
+     if (regex.test($("#excelfile").val().toLowerCase())) {  
+         var xlsxflag = false; /*Flag for checking whether excel is .xls format or .xlsx format*/  
+         if ($("#excelfile").val().toLowerCase().indexOf(".xlsx") > 0) {  
+             xlsxflag = true;  
+         }  
+         /*Checks whether the browser supports HTML5*/  
+         if (typeof (FileReader) != "undefined") {  
+             var reader = new FileReader();  
+             reader.onload = function (e) {  
+                 var data = e.target.result;  
+                 /*Converts the excel data in to object*/  
+                 if (xlsxflag) {  
+                     var workbook = XLSX.read(data, { type: 'binary' });  
+                 }  
+                 else {  
+                     var workbook = XLS.read(data, { type: 'binary' });  
+                 }  
+                 /*Gets all the sheetnames of excel in to a variable*/  
+                 var sheet_name_list = workbook.SheetNames;  
+  
+                 var cnt = 0; /*This is used for restricting the script to consider only first sheet of excel*/  
+                 sheet_name_list.forEach(function (y) { /*Iterate through all sheets*/  
+                     /*Convert the cell value to Json*/  
+                     if (xlsxflag) {  
+                         var exceljson = XLSX.utils.sheet_to_json(workbook.Sheets[y]);  
+                     }  
+                     else {  
+                         var exceljson = XLS.utils.sheet_to_row_object_array(workbook.Sheets[y]);  
+                     }  
+                     if (exceljson.length > 0 && cnt == 0) {  
+                         BindTable(exceljson, '#exceltable');  
+                         cnt++;  
+                     }  
+                 });  
+                 $('#exceltable').show();  
+             }  
+             if (xlsxflag) {/*If excel file is .xlsx extension than creates a Array Buffer from excel*/  
+                 reader.readAsArrayBuffer($("#excelfile")[0].files[0]);  
+             }  
+             else {  
+                 reader.readAsBinaryString($("#excelfile")[0].files[0]);  
+             }  
+         }  
+         else {  
+             alert("Sorry! Your browser does not support HTML5!");  
+         }  
+     }  
+     else {  
+         alert("Please upload a valid Excel file!");  
+     }  
+ }  
+
+function BindTable(jsondata, tableid) {/*Function used to convert the JSON array to Html Table*/  
+     var columns = BindTableHeader(jsondata, tableid); /*Gets all the column headings of Excel*/  
+     for (var i = 0; i < jsondata.length; i++) {  
+         var row$ = $('<tr/>');  
+         for (var colIndex = 0; colIndex < columns.length; colIndex++) {  
+             var cellValue = jsondata[i][columns[colIndex]];  
+             if (cellValue == null)  
+                 cellValue = "";  
+             row$.append($('<td/>').html(cellValue));  
+         }  
+         $(tableid).append(row$);  
+     }  
+ }  
+ function BindTableHeader(jsondata, tableid) {/*Function used to get all column names from JSON and bind the html table header*/  
+     var columnSet = [];  
+     var headerTr$ = $('<tr/>');  
+     for (var i = 0; i < jsondata.length; i++) {  
+         var rowHash = jsondata[i];  
+         for (var key in rowHash) {  
+             if (rowHash.hasOwnProperty(key)) {  
+                 if ($.inArray(key, columnSet) == -1) {/*Adding each unique column names to a variable array*/  
+                     columnSet.push(key);  
+                     headerTr$.append($('<th/>').html(key));  
+                 }  
+             }  
+         }  
+     }  
+     $(tableid).append(headerTr$);  
+     return columnSet;  
+ }  
+
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      
+<input type="file" id="excelfile" />  
+<input type="button" id="viewfile" value="Export To Table" onclick="ExportToTable()" />  
+   <br />  
+   <br />  
+<table id="exceltable">  
+</table> 
+
+
+
+
+
+<br><br>
+
+
+<canvas id="myChart" width="120" height="60"></canvas>
+
+<script>
+
+
+  window.addEventListener('load', setup);
+
+  async function setup() {
+    const ctx = document.getElementById('myChart').getContext('2d');
+    const dataTemps = await getData();
+
+    const myChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: dataTemps.team_alias,
+        datasets: [
+          {
+            label: ' Team_alias',
+            data: dataTemps.seat_quantity,
+            fill: false,
+            borderColor: 'rgba(255, 99, 132, 1)',
+            backgroundColor: 'rgba(255, 99, 132, 0.5)',
+            borderWidth: 1
+          }
+        ]
+      },
+      options: {}
+    });
+
+   
+
+
+
+
+
+  }
+    async function getData() {
+    // const response = await fetch('testdata.csv');
+    const response = await fetch('pri.csv');
+    const data = await response.text();
+    const team_alias = [];
+    const seat_quantity = [];
+
+    const rows = data.split('\n').slice(1);
+    rows.forEach(row => {
+      const cols = row.split(',');
+      team_alias.push(cols[0]);
+      seat_quantity.push(cols[9]);
+
+    });
+    return { team_alias, seat_quantity };   
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</script>
+
+
+
+
         <button id="GetSpecificUsageQuery" onclick="premiumApi.getspecificusagequery()" style="background-color: orange; border: none; border-radius: 5px; color: #333; /* Dark grey */ padding: 15px 32px">Get Specific Usage Query</button>
         <br><br>
         <button id="GetUsageInformation" onclick="premiumApi.getusageinformation()" style="background-color: orange; border: none; border-radius: 5px; color: #333; /* Dark grey */ padding: 15px 32px">Get Usage Info</button>  
@@ -354,7 +597,7 @@ dlAnchorElem.click();
       
 
 
-        <a id="demo"></a>
+      <a id="demo"></a>
 
         <textarea id="Info" rows="100" cols="50"></textarea> 
         <a id="downloadAnchorElem" style="display:none"></a>
