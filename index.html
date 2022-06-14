@@ -4,90 +4,69 @@
          <meta http-equiv="X-UA-Compatible" content="IE=edge">
          <meta name="viewport" content="width=device-width,initial-scale=1.0">
          <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-         <script src="/powerbi-client/dist/powerbi.js"></script>
          <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
          <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.5/xlsx.full.min.js"></script>
          <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.5/jszip.js"></script>
-         <script src="jquery-1.10.2.min.js" type="text/javascript"></script>  
          <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.7.7/xlsx.core.min.js"></script>  
          <script src="https://cdnjs.cloudflare.com/ajax/libs/xls/0.7.4-a/xls.core.min.js"></script>  
+         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js"></script>
          <link rel="icon" href="/img/favicon.ico">
          <title>PremiumAPITest</title>
          <h1>Premium Reporting API  Web Application</h1>  
     </head>
 
+         <body onload="premiumApi.onLoad()">
+         <script>
 
-
-
-
-    <body onload="premiumApi.onLoad()">
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js"></script>
-     
-
-        <script>
-
-
-
-
-
-
-
-//url calls
-
-
-
-
-            var premiumApi = {
+                 var premiumApi = {
                 "access_token": "",
                 "LogIn": ["Log In", "Logged In"],
                 "onLoad": function () {
                     console.log("onLoad")
-
                     var url = new URL(window.location.href.replace('#', '?'))
-
                     var query_string = url.search
-
                     var search_params = new URLSearchParams(query_string)
-
                     premiumApi.access_token = search_params.get('access_token')
-
                     let logInButton = document.getElementById("LogIn")
                     logInButton.innerText = (premiumApi.access_token) ? premiumApi.LogIn[1] : premiumApi.LogIn[0]
-
                     console.log(premiumApi.access_token)
                 },
 
-
-
                 "getusageinformation": function () {
-                    console.log(premiumApi.access_token)
+                    console.log("getusageinformation")
 
                     if (premiumApi.access_token === "") 
                         return
-
+                    let user ={
+                        'fields': ['productName','version','fullName'],
+                             'metrics': ['earliestUsageDate','latestUsageDate'],
+                             'where': '',
+                             'orderBy': '',
+                             'context': '10933601'
+                    };
                     fetch('https://developer.api.autodesk.com/insights/v1/usage-queries?offset=0&limit=100&context=10933601', { 
+                       
+                        method: 'POST',
                         headers: {  
-                                                     
-                            'Authorization': `Bearer ${premiumApi.access_token}` ,
-                            'Content-Type' : 'application/json'
+                            'Content-Type' : 'application/json',                        
+                            'Authorization': `Bearer ${premiumApi.access_token}` 
+                            
                         },
-                        method: "POST",
-                        body: {
-      'fields': ['productName','version','fullName'],
-      "metrics": ['earliestUsageDate','latestUsageDate'],
-      'where': '',
-      'orderBy': '',
-      'context': '10933601'
-                        }
+                       
+                        body: JSON.stringify(user)
                     })
                     .then(res => res.text())
                     .then(data => {
                         let json = JSON.parse(data)
                         let pretty = JSON.stringify(json, null, 2)
+                        
                         premiumApi.showInfo(pretty)
-                        console.log(data)
+                        document.getElementById("getData1").innerHTML=data;
+                        console.log(json)
                     })
                 },
+
+             
 
 
                 "getspecificusagequery": function () {
@@ -96,7 +75,7 @@
                     if (premiumApi.access_token === "") 
                         return
 
-                    fetch('https://developer.api.autodesk.com/insights/v1/usage-queries/addspecificid', { 
+                    fetch('https://developer.api.autodesk.com/insights/v1/usage-queries/8695c219bdcd45adaff6d5f346fb28712b9b0872b15162b8ad29e578cbbd2b7b', { 
                         headers: {
                            
                             'Authorization': `Bearer ${premiumApi.access_token}`,
@@ -109,6 +88,7 @@
                         let pretty = JSON.stringify(json, null, 2)
                         
                         premiumApi.showInfo(pretty)
+                        document.getElementById("getData").innerHTML=data;
                         console.log(data)
                     })
                 },
@@ -183,21 +163,36 @@
                         let json = JSON.parse(data)
                         let pretty = JSON.stringify(json, null, 2)
                         premiumApi.showInfo(pretty)
-                     
-                        console.log(json.id.length)
-                        if(json.id.length>0){
-                            var temp="";
-                            json.forEach((u)=>{
-                                temp += "<tr>";
-                                temp += "<td>"+u.id+"</td>";
-                                temp += "<td>"+u.timestamp+"</td>";
-                                temp += "<td>"+u.downloads[0].downloadURL+"</td></a>";
-                                temp += "<td>"+u.status+"</td>";
-                                temp += "<td>"+u.outputFormal+"</td></tr>";
+                        console.log(json)
+                        console.log(data[0].length)
+                        if(data[0].length>0){
+                            var temp1="";
+                         
+                                temp1 += "<tr>";
+                                temp1 += "<th>"+"Usage Id"+"</th>";
+                                temp1 += "<th>"+"Usage TimeStamp"+"</th>";
+                                temp1 += "<th>"+"Download URL"+"</th></a>";
+                                temp1 += "<th>"+"Status"+"</th>";
+                                temp1 += "<th>"+"Output Format"+"</th></tr>";
 
-                            })
+
+                           
+                            console.log(temp1)
+                            document.getElementById("data5").innerHTML = temp1;
+                        }
+                       if(data[0].length>0){
+                            var temp="";
+                         
+                                temp += "<tr>";
+                                temp += "<td>"+json.id+"</td>";
+                                temp += "<td>"+json.timestamp+"</td>";
+                                temp += "<td>"+json.downloads+"</td></a>";
+                                temp += "<td>"+json.status+"</td>";
+                                temp += "<td>"+json.outputFormal+"</td></tr>";
+
+                           
                             console.log(temp)
-                            document.getElementById("data10").innerHTML = temp;
+                            document.getElementById("data6").innerHTML = temp;
                         }
                     })
                 },
@@ -308,7 +303,7 @@ if(json.exports.length>0){
                     let clientId = "" 
                     let clientSecret=""
                     let scopes = "data:read+data:write+bucket:read"
-                    let redirectUri = encodeURI("http://localhost:5500")
+                    let redirectUri = encodeURI("http://localhost:5500")                  
                     window.open(`https://developer.api.autodesk.com/authentication/v1/authorize` +
                         `?response_type=token&client_id=${clientId}&client_secret=${clientSecret}&redirect_uri=${redirectUri}&scope=${scopes}`, "_self")
                 },
@@ -334,7 +329,17 @@ if(json.exports.length>0){
     <div class="center">
         <button id="LogIn" onclick="premiumApi.logIn()" style="background-color:  rgb(185, 166, 130); border: none; border-radius: 5px; color: #333; /* Dark grey */ padding: 15px 32px;center">Log In</button>
         <br><br></div>
-        <button id="ExportQueryInformation" onclick="premiumApi.exportqueryinformation()" style="background-color: orange; border: none; border-radius: 5px; color: #333; /* Dark grey */ padding: 15px 32px">Get Export Query Information</button>
+        <button id="GetUsageInformation" onclick="premiumApi.getusageinformation()" style="background-color: orange; border: none; border-radius: 5px; color: #333; /* Dark grey */ padding: 15px 32px">Click here to get Usage Info</button>  
+        <br><br>
+        <p id="getData1"></p>
+
+       <button id="GetSpecificUsageQuery" onclick="premiumApi.getspecificusagequery()" style="background-color: orange; border: none; border-radius: 5px; color: #333; /* Dark grey */ padding: 15px 32px">Click here to get Specific Usage Query</button>
+       <br><br>
+       <p id="getData"></p>
+       <br><br>
+
+        <button id="ExportQueryInformation" onclick="premiumApi.exportqueryinformation()" style="background-color: orange; border: none; border-radius: 5px; color: #333; /* Dark grey */ padding: 15px 32px">Click here to get Export Query Information</button>
+     
         <br><br>
         
               
@@ -352,26 +357,22 @@ if(json.exports.length>0){
         </div>
 
 <br><br>
-        <button id="getSpecificReport" onclick="premiumApi.getspecificreport()" style="background-color: orange; border: none; border-radius: 5px; color: #333; /* Dark grey */ padding: 15px 32px">Get Specific Report</button>
+        <button id="getSpecificReport" onclick="premiumApi.getspecificreport()" style="background-color: orange; border: none; border-radius: 5px; color: #333; /* Dark grey */ padding: 15px 32px">Click here to get Specific Report</button>
         <br><br>
         <div class = "container">
             <table class="table table-stripped">
-                <thead>
-                    <th>Usage id</th>
-                    <th>Usage timestamp</th>
-                    <th>Download URL</th>
-                    <th>Usage status</th>
-                    <th>outputFormat</th>
+                <thead id="data5">
+                
                 </thead>
          
-              <tbody id="data11">
+              <tbody id="data6">
 
               </tbody>
             </table>
         </div>
 
         <br><br>
-        <button id="viewAllExport" onclick="premiumApi.viewallexport()" style="background-color: orange; border: none; border-radius: 5px; color: #333; /* Dark grey */ padding: 15px 32px">View All Export</button>
+        <button id="viewAllExport" onclick="premiumApi.viewallexport()" style="background-color: orange; border: none; border-radius: 5px; color: #333; /* Dark grey */ padding: 15px 32px">Click here to view All Export</button>
        
         <div class = "container">
             <table class="table table-stripped">
@@ -585,13 +586,8 @@ function BindTable(jsondata, tableid) {/*Function used to convert the JSON array
 
 </script>
 
-
-
-
-        <button id="GetSpecificUsageQuery" onclick="premiumApi.getspecificusagequery()" style="background-color: orange; border: none; border-radius: 5px; color: #333; /* Dark grey */ padding: 15px 32px">Get Specific Usage Query</button>
-        <br><br>
-        <button id="GetUsageInformation" onclick="premiumApi.getusageinformation()" style="background-color: orange; border: none; border-radius: 5px; color: #333; /* Dark grey */ padding: 15px 32px">Get Usage Info</button>  
-        <br><br>
+    
+        
     </div>
     <div class="column">
       
