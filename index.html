@@ -17,7 +17,7 @@
 
          <body onload="premiumApi.onLoad()">
          <script>
-
+               var specific_id;
                  var premiumApi = {
                 "access_token": "",
                 "LogIn": ["Log In", "Logged In"],
@@ -94,7 +94,8 @@
 
 
 
-
+                           specific_id=json.id;
+                           console.log(specific_id);
 
 
 
@@ -119,8 +120,9 @@
 
                     if (premiumApi.access_token === "") 
                         return
+                        console.log(specific_id);
 
-                    fetch('https://developer.api.autodesk.com/insights/v1/usage-queries/8695c219bdcd45adaff6d5f346fb28712b9b0872b15162b8ad29e578cbbd2b7b', { 
+                    fetch('https://developer.api.autodesk.com/insights/v1/usage-queries/'+specific_id, { 
                         headers: {
                            
                             'Authorization': `Bearer ${premiumApi.access_token}`,
