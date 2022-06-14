@@ -61,7 +61,52 @@
                         let pretty = JSON.stringify(json, null, 2)
                         
                         premiumApi.showInfo(pretty)
-                        document.getElementById("getData1").innerHTML=data;
+
+
+                        if(data[0].length>0){
+                            var temp1="";
+                         
+                                temp1 += "<tr>";
+                                temp1 += "<th>"+"id"+"</th>";
+                                temp1 += "<th>"+"status"+"</th>";
+                                temp1 += "<th>"+"startTime"+"</th></a>";
+                           
+
+
+                           
+                            console.log(temp1)
+                            document.getElementById("getData11").innerHTML = temp1;
+                        }
+                       if(data[0].length>0){
+                            var temp="";
+                         
+                                temp += "<tr>";
+                                temp += "<td>"+json.id+"</td>";
+                                temp += "<td>"+json.status+"</td>";
+                                temp += "<td>"+json.startTime+"</td></a>";
+                           
+                           
+                            console.log(temp)
+                            document.getElementById("getData1").innerHTML = temp;
+                        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                        
+                       // document.getElementById("getData1").innerHTML=data;
                         console.log(json)
                     })
                 },
@@ -331,8 +376,17 @@ if(json.exports.length>0){
         <br><br></div>
         <button id="GetUsageInformation" onclick="premiumApi.getusageinformation()" style="background-color: orange; border: none; border-radius: 5px; color: #333; /* Dark grey */ padding: 15px 32px">Click here to get Usage Info</button>  
         <br><br>
-        <p id="getData1"></p>
+        <div class = "container">
+            <table class="table table-stripped">
+                <thead id="getData11">
+                
+                </thead>
+         
+              <tbody id="getData1">
 
+              </tbody>
+            </table>
+        </div><br><br>
        <button id="GetSpecificUsageQuery" onclick="premiumApi.getspecificusagequery()" style="background-color: orange; border: none; border-radius: 5px; color: #333; /* Dark grey */ padding: 15px 32px">Click here to get Specific Usage Query</button>
        <br><br>
        <p id="getData"></p>
