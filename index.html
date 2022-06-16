@@ -11,8 +11,10 @@
          <script src="https://cdnjs.cloudflare.com/ajax/libs/xls/0.7.4-a/xls.core.min.js"></script>  
          <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js"></script>
          <link rel="icon" href="/img/favicon.ico">
+         <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css">
+         <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/jstree/3.3.7/themes/default/style.min.css" />
          <title>PremiumAPITest</title>
-         <h1>Premium Reporting API  Web Application</h1>  
+       
     </head>
 
          <body onload="premiumApi.onLoad()">
@@ -362,21 +364,81 @@ if(json.exports.length>0){
                     let logInButton = document.getElementById("Info")
                     logInButton.value = text
                 }
-            }
-
-        
-            
-          
+            }      
         </script>
 
         
+<nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container-fluid">
+      <ul class="nav navbar-nav left">
+        <li>
+          <a href="http://forge.autodesk.com" target="_blank">
+            <img alt="Autodesk Forge" src="//developer.static.autodesk.com/images/logo_forge-2-line.png" height="40">         
+        </a>
+        </li>
+       </ul>
+      <h4>Premium Reporting API  Web Application  <button id="LogIn" onclick="premiumApi.logIn()" class="buttonstyling">Log In</button>  </h4>
+     
+      <style>
+        .buttonstyling {
+         border: 2px orange;
+         float:right;
+         display:block;
+         background-color: orange;
+         color: #333; /* Dark grey */ 
+         padding: 12px 12px
+                      }
+      </style>
+          <style>
+            .buttonstyle {
+             border: 2px orange;
+             display: block;
+             margin: 0 auto;
+             display:block;
+             background-color: orange;
+             color: #333; /* Dark grey */ 
+             padding: 12px 12px
+                          }
+          </style>
+    </div>
+
+
+  </nav>
+
+
+  <div class="container-fluid fill">
+    <div class="row fill">
+      <div class="col-sm-4 fill">
+        <div class="panel panel-default fill">
+          <div class="panel-heading" data-toggle="tooltip">
+        
+          </div>
+        
+        </div>
+      </div>
+      <div class="col-sm-8 fill">
+     
+      </div>
+    </div>
+  </div>
+  
+  
+    
+   
+
+
+
+
+
        <div class="row">
 <div class="column">
 
     <div class="center">
-        <button id="LogIn" onclick="premiumApi.logIn()" style="background-color:  rgb(185, 166, 130); border: none; border-radius: 5px; color: #333; /* Dark grey */ padding: 15px 32px;center">Log In</button>
+    
+      
         <br><br></div>
-        <button id="GetUsageInformation" onclick="premiumApi.getusageinformation()" style="background-color: orange; border: none; border-radius: 5px; color: #333; /* Dark grey */ padding: 15px 32px">Click here to get Usage Info</button>  
+        <br><br><br><br>
+        <button id="GetUsageInformation" onclick="premiumApi.getusageinformation()" class="buttonstyle">Click here to get Usage Info</button>  
         <br><br>
         <div class = "container">
             <table class="table table-stripped">
@@ -389,12 +451,12 @@ if(json.exports.length>0){
               </tbody>
             </table>
         </div><br><br>
-       <button id="GetSpecificUsageQuery" onclick="premiumApi.getspecificusagequery()" style="background-color: orange; border: none; border-radius: 5px; color: #333; /* Dark grey */ padding: 15px 32px">Click here to get Specific Usage Query</button>
+       <button id="GetSpecificUsageQuery" onclick="premiumApi.getspecificusagequery()" class="buttonstyle">Click here to get Specific Usage Query</button>
        <br><br>
        <p id="getData"></p>
        <br><br>
 
-        <button id="ExportQueryInformation" onclick="premiumApi.exportqueryinformation()" style="background-color: orange; border: none; border-radius: 5px; color: #333; /* Dark grey */ padding: 15px 32px">Click here to get Export Query Information</button>
+        <button id="ExportQueryInformation" onclick="premiumApi.exportqueryinformation()" class="buttonstyle">Click here to get Export Query Information</button>
      
         <br><br>
         
@@ -413,7 +475,7 @@ if(json.exports.length>0){
         </div>
 
 <br><br>
-        <button id="getSpecificReport" onclick="premiumApi.getspecificreport()" style="background-color: orange; border: none; border-radius: 5px; color: #333; /* Dark grey */ padding: 15px 32px">Click here to get Specific Report</button>
+        <button id="getSpecificReport" onclick="premiumApi.getspecificreport()" class="buttonstyle">Click here to get Specific Report</button>
         <br><br>
         <div class = "container">
             <table class="table table-stripped">
@@ -428,7 +490,7 @@ if(json.exports.length>0){
         </div>
 
         <br><br>
-        <button id="viewAllExport" onclick="premiumApi.viewallexport()" style="background-color: orange; border: none; border-radius: 5px; color: #333; /* Dark grey */ padding: 15px 32px">Click here to view All Export</button>
+        <button id="viewAllExport" onclick="premiumApi.viewallexport()" class="buttonstyle">Click here to view All Export</button>
        
         <div class = "container">
             <table class="table table-stripped">
