@@ -290,6 +290,7 @@
                             document.getElementById("data6").innerHTML = temp;
                         }
                     })
+                    
                 },
 
 
@@ -527,7 +528,11 @@ if(json.exports.length>0){
         </div>
         
         
+        <br><br>
         
+
+
+
         
         
         
@@ -707,8 +712,9 @@ function BindTable(jsondata, tableid) {/*Function used to convert the JSON array
 
 
       
-<input type="file" id="excelfile" />  
-<input type="button" id="viewfile" value="Export To Table" onclick="ExportToTable()" />  
+<input type="file" id="excelfile" class="buttonstyle" />  
+<br><br>
+<input type="button" id="viewfile" value="Export To Table" onclick="ExportToTable()" class="buttonstyle"  />  
    <br />  
    <br />  
 <table id="exceltable">  
@@ -719,94 +725,117 @@ function BindTable(jsondata, tableid) {/*Function used to convert the JSON array
 
 
 <br><br>
-
-
-<canvas id="myChart" width="120" height="60"></canvas>
+<script>
+    window.addEventListener('load', setup);
+    
+      async function setup() {
+        const ctx = document.getElementById('myChart1').getContext('2d');
+        const dataTemps = await getData();
+    
+        const myChart = new Chart(ctx, {
+          type: 'pie',
+          data: {
+            labels: dataTemps.team_alias,
+            datasets: [
+              {
+                label: ' Team_alias',
+                data: dataTemps.seat_quantity,
+                fill: false,
+                borderColor: 'rgba(255, 99, 132, 1)',
+                backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                borderWidth: 3
+             
+              }
+            ]
+          },
+          options: {
+            responsive:false
+          }
+        });
+      }
+        async function getData() {
+        // const response = await fetch('testdata.csv');
+        const response = await fetch('all.csv');
+        const data = await response.text();
+        const team_alias = [];
+        const seat_quantity = [];
+    
+        const rows = data.split('\n').slice(1);
+        rows.forEach(row => {
+          const cols = row.split(',');
+          team_alias.push(cols[0]);
+          seat_quantity.push(cols[9]);
+    
+        });
+        return { team_alias, seat_quantity };   
+      }
+    </script>
 
 <script>
+    window.addEventListener('load', setup);
+     async function setup() {
+      const ctx = document.getElementById('myChart').getContext('2d');
+      const dataTemps = await getData();
+  
+      const myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: dataTemps.team_alias,
+          datasets: [
+            {
+              label: ' Team_alias',
+              data: dataTemps.seat_quantity,
+              fill: false,
+              borderColor: 'rgba(255, 99, 132, 1)',
+              backgroundColor: 'rgba(255, 99, 132, 0.5)',
+              borderWidth: 3
+              
+            }
+          ]
+        },
+        options: {
+          responsive:false
+        }
+      });
+    }
+      async function getData() {
+      // const response = await fetch('testdata.csv');
+      const response = await fetch('all.csv');
+      const data = await response.text();
+      const team_alias = [];
+      const seat_quantity = [];
+  
+      const rows = data.split('\n').slice(1);
+      rows.forEach(row => {
+        const cols = row.split(',');
+        team_alias.push(cols[0]);
+        seat_quantity.push(cols[9]);
+  
+      });
+      return { team_alias, seat_quantity };   
+    }
+  </script>
 
-
-  window.addEventListener('load', setup);
-
-  async function setup() {
-    const ctx = document.getElementById('myChart').getContext('2d');
-    const dataTemps = await getData();
-
-    const myChart = new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels: dataTemps.team_alias,
-        datasets: [
-          {
-            label: ' Team_alias',
-            data: dataTemps.seat_quantity,
-            fill: false,
-            borderColor: 'rgba(255, 99, 132, 1)',
-            backgroundColor: 'rgba(255, 99, 132, 0.5)',
-            borderWidth: 1
-          }
-        ]
-      },
-      options: {}
-    });
 
    
 
+<canvas id="myChart" width="500" height="250" style="float:left" ></canvas>
+<canvas id="myChart1" width="500" height="250" style="float:left"></canvas>
 
-
-
-
-  }
-    async function getData() {
-    // const response = await fetch('testdata.csv');
-    const response = await fetch('pri.csv');
-    const data = await response.text();
-    const team_alias = [];
-    const seat_quantity = [];
-
-    const rows = data.split('\n').slice(1);
-    rows.forEach(row => {
-      const cols = row.split(',');
-      team_alias.push(cols[0]);
-      seat_quantity.push(cols[9]);
-
-    });
-    return { team_alias, seat_quantity };   
-  }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-</script>
-
-    
-        
-    </div>
+<
+ 
     <div class="column">
-      
-
-
       <a id="demo"></a>
-
         <textarea id="Info" rows="100" cols="50"></textarea> 
-        <a id="downloadAnchorElem" style="display:none"></a>
-      
-        
+        <a id="downloadAnchorElem" style="display:none"></a>           
         <canvas id="canvas"></canvas> 
         <canvas id="myChart" width="400" height="400"></canvas>
     </div>
-    </div>
 
-        
+
+
+
+
+    </div>    
     </body>
 </html>
