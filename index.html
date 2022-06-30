@@ -20,6 +20,7 @@
          <body onload="premiumApi.onLoad()">
          <script>
                var specific_id;
+               var specificexport_id;
                  var premiumApi = {
                 "access_token": "",
                 "LogIn": ["Log In", "Logged In"],
@@ -35,10 +36,8 @@
                 },
 
                 "getusageinformation": function () {
+                    console.log(premiumApi.access_token)
                     console.log("getusageinformation")
-
-                    if (premiumApi.access_token === "") 
-                        return
                     let user ={
                         'fields': ['productName','version','fullName'],
                              'metrics': ['earliestUsageDate','latestUsageDate'],
@@ -46,6 +45,9 @@
                              'orderBy': '',
                              'context': '10933601'
                     };
+                    if (premiumApi.access_token === "") 
+                        return
+                
                     fetch('https://developer.api.autodesk.com/insights/v1/usage-queries?offset=0&limit=100&context=10933601', { 
                        
                         method: 'POST',
@@ -63,8 +65,16 @@
                         let pretty = JSON.stringify(json, null, 2)
                         
                         premiumApi.showInfo(pretty)
+                       console.log(json.rows.length)
 
 
+                    for(var x=0;x<json.rows.length;x++)
+                    {
+
+                     console.log(json.id);
+
+                    }
+                        
                         if(data[0].length>0){
                             var temp1="";
                          
@@ -78,6 +88,7 @@
                            
                             console.log(temp1)
                             document.getElementById("getData11").innerHTML = temp1;
+                            
                         }
                        if(data[0].length>0){
                             var temp="";
@@ -91,26 +102,59 @@
                             console.log(temp)
                             document.getElementById("getData1").innerHTML = temp;
                         }
-
-
-
-
-
+                     
                            specific_id=json.id;
                            console.log(specific_id);
 
 
+                           console.log(json)
+//Fields Information
+                       
+                         if(json.columns.length>0){
+                            var temp1="";
+                            
+                                temp1 += "<tr>";
+                                temp1 += "<th>"+"Product Name"+"</th>";
+                                temp1 += "<th>"+"Version"+"</th>";
+                                temp1 += "<th>"+"Full Name"+"</th></a>";
+                                temp1 += "<th>"+"Earliest Usage Date"+"</th>";
+                                temp1 += "<th>"+"Latest Usage Date"+"</th></tr>";
 
+                            
+                            console.log(temp1)
+                            document.getElementById("getData19").innerHTML = temp1;
+                        }
+                       console.log(json.rows.length);
+                       console.log(json.rows[0])
+                       var x= 0;
+                        if(json.rows.length>0){
+                        var y=0;
+                            json.rows.forEach((u)=>{
+                                temp += "<tr>";
+                                temp += "<td>"+json.rows[x][y]+"</td>";
+                                temp += "<td>"+json.rows[x][y+1]+"</td>";
+                                temp += "<td>"+json.rows[x][y+2]+"</td></a>";
+                                temp += "<td>"+json.rows[x][y+3]+"</td>";
+                                temp += "<td>"+json.rows[x][y+4]+"</td></tr>";
+                                x=x+1;
+                            })
+                          
+                            console.log(x);
+                          
+                   
+               
 
+                        }
 
+                        document.getElementById("getData20").innerHTML = temp;
 
 
 
 
 
                         
-                       // document.getElementById("getData1").innerHTML=data;
-                        console.log(json)
+                
+                       
                     })
                 },
 
@@ -135,9 +179,8 @@
                     .then(data => {
                         let json = JSON.parse(data)
                         let pretty = JSON.stringify(json, null, 2)
-                        
-                        premiumApi.showInfo(pretty)
-                        document.getElementById("getData").innerHTML=data;
+                        premiumApi.showInfo(json)
+                        document.getElementById("getData").innerHTML=pretty;
                         console.log(data)
                     })
                 },
@@ -188,8 +231,11 @@
                             })
                             console.log(temp)
                             document.getElementById("data10").innerHTML = temp;
-                        }
+                            specificexport_id=json.exports[0].id;
+                           console.log(specificexport_id);
 
+                        }
+                       
 
                     })
                 },
@@ -202,7 +248,7 @@
                     if (premiumApi.access_token === "") 
                         return
 
-                    fetch('https://developer.api.autodesk.com/insights/v1/exports/d095407d-f86a-4426-8ec0-46afea5694de', { 
+                    fetch('https://developer.api.autodesk.com/insights/v1/exports/'+specificexport_id, { 
                         headers: {
                             'Authorization': `Bearer ${premiumApi.access_token}`
                         }
@@ -363,7 +409,21 @@ if(json.exports.length>0){
                 "showInfo": function (text) {
                     let logInButton = document.getElementById("Info")
                     logInButton.value = text
-                }
+                },
+
+              
+                "logOut": function () {
+                    console.log("logOut")
+                    if (premiumApi.access_token === "") 
+                        return
+                    fetch('https://accounts.autodesk.com/Authentication/LogOut', { 
+                        headers: {
+                            'Authorization': `Bearer ${premiumApi.access_token}`
+                        }
+                    })}
+
+
+
             }      
         </script>
 
@@ -377,7 +437,8 @@ if(json.exports.length>0){
         </a>
         </li>
        </ul>
-      <h4>Premium Reporting API  Web Application  <button id="LogIn" onclick="premiumApi.logIn()" class="buttonstyling">Log In</button>  </h4>
+      <h4>Premium Reporting API  Web Application  <button id="LogIn" onclick="premiumApi.logIn()" class="buttonstyling">Log In</button>
+      &nbsp; &nbsp;  &nbsp; &nbsp; &nbsp; &nbsp;<button id="LogOut" onclick="premiumApi.logOut()" class="buttonstyling">Log Out</button>  </h4>
      
       <style>
         .buttonstyling {
@@ -386,7 +447,7 @@ if(json.exports.length>0){
          display:block;
          background-color: orange;
          color: #333; /* Dark grey */ 
-         padding: 12px 12px
+         padding: 10px 10px
                       }
       </style>
           <style>
@@ -450,11 +511,35 @@ if(json.exports.length>0){
 
               </tbody>
             </table>
-        </div><br><br>
-       <button id="GetSpecificUsageQuery" onclick="premiumApi.getspecificusagequery()" class="buttonstyle">Click here to get Specific Usage Query</button>
+        </div>
+        
+        <br><br>
+        <div class = "container">
+            <table class="table table-stripped">
+                <thead id="getData19">
+                
+                </thead>
+                <tbody id="getData20">
+
+                </tbody>
+  
+            </table>
+        </div>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <br><br>
+    <!-- <button id="GetSpecificUsageQuery" onclick="premiumApi.getspecificusagequery()" class="buttonstyle">Click here to get Specific Usage Query</button>
        <br><br>
        <p id="getData"></p>
-       <br><br>
+       <br><br>--> 
 
         <button id="ExportQueryInformation" onclick="premiumApi.exportqueryinformation()" class="buttonstyle">Click here to get Export Query Information</button>
      
