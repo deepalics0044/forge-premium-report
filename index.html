@@ -147,14 +147,7 @@
                         }
 
                         document.getElementById("getData20").innerHTML = temp;
-
-
-
-
-
-                        
-                
-                       
+                        //Difference in latest and initial usage     
                     })
                 },
 
@@ -289,7 +282,8 @@
                             console.log(temp)
                             document.getElementById("data6").innerHTML = temp;
                         }
-                    })
+
+})
                     
                 },
 
@@ -417,11 +411,10 @@ if(json.exports.length>0){
                     console.log("logOut")
                     if (premiumApi.access_token === "") 
                         return
-                    fetch('https://accounts.autodesk.com/Authentication/LogOut', { 
-                        headers: {
-                            'Authorization': `Bearer ${premiumApi.access_token}`
-                        }
-                    })}
+                        let url = "http://localhost:5500";
+                     location.href=url;
+                   
+                    }
 
 
 
@@ -438,17 +431,19 @@ if(json.exports.length>0){
         </a>
         </li>
        </ul>
-      <h4>Premium Reporting API  Web Application  <button id="LogIn" onclick="premiumApi.logIn()" class="buttonstyling">Log In</button>
-      &nbsp; &nbsp;  &nbsp; &nbsp; &nbsp; &nbsp;<button id="LogOut" onclick="premiumApi.logOut()" class="buttonstyling">Log Out</button>  </h4>
+      <h3>Premium Reporting API  Web Application  <button id="LogIn" onclick="premiumApi.logIn()" class="buttonstyling" style='margin-right:16px'>Log In</button>
+     <button id="LogOut" onclick="premiumApi.logOut()" class="buttonstyling" style='margin-right:16px'>Log Out</button>  </h3>
      
       <style>
         .buttonstyling {
-         border: 2px orange;
+         border: 10px black;
+         
          float:right;
          display:block;
          background-color: orange;
          color: #333; /* Dark grey */ 
-         padding: 10px 10px
+         padding: 12px 12px;
+         border-radius:15px;
                       }
       </style>
           <style>
@@ -459,7 +454,8 @@ if(json.exports.length>0){
              display:block;
              background-color: orange;
              color: #333; /* Dark grey */ 
-             padding: 12px 12px
+             padding: 12px 12px;
+             border-radius: 90%;
                           }
           </style>
     </div>
@@ -578,7 +574,7 @@ if(json.exports.length>0){
               </tbody>
             </table>
         </div>
-
+      
         <br><br>
         <button id="viewAllExport" onclick="premiumApi.viewallexport()" class="buttonstyle">Click here to view All Export</button>
        
@@ -729,6 +725,65 @@ function BindTable(jsondata, tableid) {/*Function used to convert the JSON array
     window.addEventListener('load', setup);
     
       async function setup() {
+        const ctx = document.getElementById('myChart2').getContext('2d');
+        const dataTemps = await getData();
+    
+        const myChart2 = new Chart(ctx, {
+          type: 'polarArea',
+          data: {
+            labels: dataTemps.team_alias,
+            datasets: [
+              {
+                label: ' Team_alias',
+                data: dataTemps.seat_quantity,
+                fill: false,
+                borderColor: 'rgba(255, 99, 132, 1)',
+                backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                borderWidth: 3
+             
+              }
+            ]
+          },
+
+
+
+          options: {
+            responsive:false,
+            plugins: {
+      legend: {
+        position: 'top',
+      },
+      title: {
+        display: true,
+        text: 'Chart.js Scatter Chart'
+      }
+    }
+          }
+        });
+      }
+        async function getData() {
+        // const response = await fetch('testdata.csv');
+        const response = await fetch('all.csv');
+        const data = await response.text();
+        const team_alias = [];
+        const seat_quantity = [];
+    
+        const rows = data.split('\n').slice(1);
+        rows.forEach(row => {
+          const cols = row.split(',');
+          team_alias.push(cols[0]);
+          seat_quantity.push(cols[9]);
+    
+        });
+        return { team_alias, seat_quantity };   
+      }
+    </script>
+
+
+<script>
+    window.addEventListener('load', setup);
+    
+      async function setup() {
         const ctx = document.getElementById('myChart1').getContext('2d');
         const dataTemps = await getData();
     
@@ -821,7 +876,7 @@ function BindTable(jsondata, tableid) {/*Function used to convert the JSON array
 
 <canvas id="myChart" width="500" height="250" style="float:left" ></canvas>
 <canvas id="myChart1" width="500" height="250" style="float:left"></canvas>
-
+<canvas id="myChart2" width="500" height="250" style="float:left" ></canvas>
 <
  
     <div class="column">
